@@ -38,64 +38,65 @@
         $username = $_POST["username"];
         $password = $_POST["password"];
 
+
         //entered valid data for username and password
         if($valid == true){
 
             try{
                 $user = $userRepo->get_user_by_Username($username);
-                $hash = $loginService->validate_login($username);
-                $loginResult = password_verify($password,$hash);
 
-                //entered correct username and password. Now check if user is deactivated or locked
-                if($loginResult){
+                //user found
+                if(strlen($user->userName) > 0){
 
-                    $active = $user->active;
-                    $locked = $user->locked;
+                    //verify correct password
+                    $hash = $user->password;
+                    $loginresult = password_verify($password,$hash);
 
-                    if(!$active){
-                        $loginresult = "User account is deactivated <br/>";
-                        $valid = false;
+                    //correct password
+                    if($loginresult){
+  
+                        if(!$user->active){
+                            $loginresult = "User account is deactivated <br/>";
+                            $valid = false;
+                        }
+                        elseif($user->locked){
+                            $loginresult = "User is locked. Too many incorrect login attempts.. <br/>";
+                            $valid = false;
+                        }
+                        else{
+                            //create session
+                            session_start();
+    
+                            $_SESSION['username'] = $username;
+                            $_SESSION['login'] = true;
+                            $_SESSION['start'] = time();
+                            $_SESSION['sessionExpiration'] = 60 * 10;
+    
+                            //reset user incorrect login attempts
+                            $user->incorrectLoginAttempts = 0;
+                            if($user->active){
+                                $user->active = 1;
+                            }
+                            else{
+                                $user->active = 0;
+                            }
+    
+                            if($user->locked){
+                                $user->locked = 1;
+                            }
+                            else{
+                                $user->locked = 0;
+                            }
+    
+    
+                            $userRepo->update_user($user);
+    
+                            Header("Location: list.php");
+                        }
                     }
-                    elseif($locked){
-                        $loginresult = "User is locked. Too many incorrect login attempts.. <br/>";
-                        $valid = false;
-                    }
+                    //incorrect password
                     else{
-                        //create session
-                        session_start();
-
-                        $_SESSION['username'] = $username;
-                        $_SESSION['login'] = true;
-                        $_SESSION['start'] = time();
-                        $_SESSION['sessionExpiration'] = 60 * 10;
-
-                        //reset user incorrect login attempts
-                        $user->incorrectLoginAttempts = 0;
-                        if($user->active){
-                            $user->active = 1;
-                        }
-                        else{
-                            $user->active = 0;
-                        }
-
-                        if($user->locked){
-                            $user->locked = 1;
-                        }
-                        else{
-                            $user->locked = 0;
-                        }
-
-
-                        $userRepo->update_user($user);
-
-                        Header("Location: list.php");
-                    }
-                }
-                //entered incorrect username or password
-                else{
-
-                    //user exists but they entered the wrong password
-                    if(strlen($user->userName) > 0){
+          
                         $user->incorrectLoginAttempts = $user->incorrectLoginAttempts + 1;
                  
                         if($user->incorrectLoginAttempts >= 3){
@@ -119,11 +120,12 @@
 
                         $userRepo->update_user($user);
                     }
-                    //user wasn't found for the given username
-                    else{
-                        $loginresult = "Incorrect username or password.";
-                        $valid = false;
-                    }
+                }
+                //username with that username isn't found
+                else{
+ 
+                    $loginresult = "Incorrect username or password.";
+                    $valid = false;
                 }
             }
             catch(Exception $e){

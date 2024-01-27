@@ -3,7 +3,7 @@
 <?php 
     require("./model/User.php");
     require("./Data/UserRepository.php");
-
+    
     $search = "";
 
     $servername = "localhost";
@@ -83,20 +83,19 @@
     
 
     function onFilterChanged(){
-   
+        
         var items = document.getElementsByClassName("row");
 
         var search = document.getElementById("search").value;
-
+        
         Array.from(items).forEach(function(el) {
             var text = el.innerText;
-            
+           
             if(text.toUpperCase().indexOf(search.toUpperCase()) > -1){
                 el.style.display = "";
             }
             else{
                 el.style.display = "none";
-          
             }
         });
     }
@@ -108,10 +107,36 @@
         },1000);
     }
 
-    function doneTyping(){
+    function doneTyping(str){
+  
         var form = document.getElementById("phpsearchform");
         form.submit();
     }
+
+    function ajaxOnSearchEntered(str){
+        clearTimeout(timer);
+        setTimeout(function() {
+            ajaxDoneTyping(str);
+        },1000);
+    }
+
+    function ajaxDoneTyping(str){
+  
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                var body = document.querySelector('tbody');
+                while (body.firstChild) {
+                    // This will remove all children within tbody but leaves header
+                    body.removeChild(body.firstChild);
+
+                }   
+                body.innerHTML = this.responseText;
+            }
+        };
+        xmlhttp.open("GET", "search.php?q=" + str, true);
+        xmlhttp.send();
+}
 
 </script>
 <style>
@@ -169,14 +194,16 @@
                 </form>
             </div>
         <button onclick="navigateAddUser()">Add User</button>
-        <input id="search"placeholder="Search" onkeyup="onFilterChanged()" value=""/>
+        <br/>
+        JavaScript Search:<input id="search" placeholder="Search" onkeyup="onFilterChanged()" value=""/>
         <form id="phpsearchform" method="GET" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
             PHP Search: <input id="searchphp" name="search" onkeyup="onSearch()" placeholder="Search" value="<?php echo $search ?>"/>
             <input type="submit" placeholder="Search" />
         </form>
         
+        PHP/AJAX Search: <input onkeyup="ajaxOnSearchEntered(this.value)" placeholder="Search"/>
         
-        <table>
+        <table id="user-table">
             <thead>
                 <tr>
                     <td class="header">Id</td>
