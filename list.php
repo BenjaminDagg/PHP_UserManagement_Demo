@@ -1,6 +1,5 @@
-<!DOCTYPE html>
-
 <?php 
+    require("header.php");
     require("./model/User.php");
     require("./Data/UserRepository.php");
     
@@ -31,18 +30,20 @@
 
         if(isset($_GET['search'])){
             $users = $userRepo->get_users();
-            $search = $_GET['search'];
+            $search = strtolower($_GET['search']);
 
             foreach($users as $k=>$v) { 
                 $found = false;
                 foreach ($users[$k] as $key=>$value) { 
-                    
+    
                     //skip password,active,locked etc
                     if($key == "active" || $key == "password" || $key == "locked" || $key == "incorrectLoginAttempts" || $key=="lockoutEnd"){
                         continue;
                     }
-
-                    if(str_contains($value,$search) ){
+    
+                    $v = strtolower($value);
+    
+                    if(str_contains($v,$search) ){
                         $found = true;
                     }
                 }  
@@ -55,6 +56,7 @@
         }
     }
 ?>
+<!DOCTYPE html>
 <script>
     function navigateAddUser(){
         window.location.href = "add_user.php";
@@ -85,19 +87,37 @@
     function onFilterChanged(){
         
         var items = document.getElementsByClassName("row");
-
         var search = document.getElementById("search").value;
+        var count = Array.from(items).length;
+        var filteredItems = [];
+
+        //delete 'no results' row if it exists
+        if(document.getElementsByClassName('row-empty').length > 0){
+            var deleteRow = document.getElementsByClassName('row-empty')[0];
+            deleteRow.remove();
+        }
         
+        //loop through rows of table. if contains search text then keep row. if not then set display:none
         Array.from(items).forEach(function(el) {
             var text = el.innerText;
-           
+            
             if(text.toUpperCase().indexOf(search.toUpperCase()) > -1){
                 el.style.display = "";
             }
             else{
                 el.style.display = "none";
+                filteredItems.push(el);
             }
         });
+
+
+        //if no results then add a row with text 'No users found'
+        if(filteredItems.length == count){
+
+            var body = document.querySelector('tbody');
+            body.innerHTML += "<tr class=\"row-empty\"><td class=\"data\" align=\"center\" colspan=\"8\">No users found.</td></tr>"
+        }
+        
     }
     var timer = null;
     function onSearch(){
@@ -108,7 +128,6 @@
     }
 
     function doneTyping(str){
-  
         var form = document.getElementById("phpsearchform");
         form.submit();
     }
@@ -120,22 +139,23 @@
         },1000);
     }
 
-    function ajaxDoneTyping(str){
-  
-        var xmlhttp = new XMLHttpRequest();
-        xmlhttp.onreadystatechange = function() {
-            if (this.readyState == 4 && this.status == 200) {
-                var body = document.querySelector('tbody');
-                while (body.firstChild) {
-                    // This will remove all children within tbody but leaves header
-                    body.removeChild(body.firstChild);
+    async function ajaxDoneTyping(str){
 
-                }   
-                body.innerHTML = this.responseText;
+        var body = document.querySelector('tbody');
+
+        try{
+            var response = await fetch("search.php?q=" + str);
+
+            if(!response.ok){
+                throw await response.status;
             }
-        };
-        xmlhttp.open("GET", "search.php?q=" + str, true);
-        xmlhttp.send();
+
+            var text = await response.text();
+            body.innerHTML = text; 
+        }
+        catch(error){
+            body.innerHTML = "<tr class=\"row-empty\"><td class=\"data\" align=\"center\" colspan=\"8\">An error ocurred when trying to query users.</td></tr>"
+        }
 }
 
 </script>
@@ -176,11 +196,15 @@
     table tr:nth-child(even) {
         background-color: #ccc;
     }
+
+    .row-hidden {
+        display: none;
+    }
 </style>
 <html>
     <head>
         <title>Users</title>
-        <?php require("header.php") ?>
+        
     </head>
     <h3>User Management</h3>
     <body>
@@ -198,7 +222,6 @@
         JavaScript Search:<input id="search" placeholder="Search" onkeyup="onFilterChanged()" value=""/>
         <form id="phpsearchform" method="GET" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
             PHP Search: <input id="searchphp" name="search" onkeyup="onSearch()" placeholder="Search" value="<?php echo $search ?>"/>
-            <input type="submit" placeholder="Search" />
         </form>
         
         PHP/AJAX Search: <input onkeyup="ajaxOnSearchEntered(this.value)" placeholder="Search"/>
@@ -217,6 +240,12 @@
                 </tr>
             </thead>
             <tbody>
+            <?php if(count($users) == 0) : ?>
+                <tr class="row">
+                    <td class="data" align="center" colspan="8">No users found.</td>
+                </tr>
+            <?php endif; ?>
+
             <?php foreach($users as $value) : ?>
                 <tr class="row">
                     <td class="data"><?php echo $value->id ?></td>

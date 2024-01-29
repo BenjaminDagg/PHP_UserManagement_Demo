@@ -128,6 +128,14 @@
                 $currentUser->incorrectLoginAttempts = 0;
                 $currentUser->lockoutEnd = NULL;
             }
+            //if user wasn't locked before but they changed the lock checkbox to true do nothing. 
+            //User shouldn't be able to manually lock someone. That's what the Active feature is for
+            elseif($isLocked && !$currentUser->locked){
+                $currentUser->locked = 0;
+            }
+            else{
+                $currentUser->locked = $currentUser->locked ? 1 : 0;
+            }
             
             try{
                 $userRepo->update_user($currentUser);
