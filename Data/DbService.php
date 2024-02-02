@@ -1,33 +1,27 @@
 <?php 
-class MyDatabaseService {
-    private $serverName;
-    private $username;
-    private $password;
-    private $dbName;
+
+require_once("DatabaseContants.php");
+
+class DatabaseService {
+
     private $conn;
 
-    function __construct($server, $username,$password,$dbName)
+    function __construct()
     {
-        $this->serverName = $server;
-        $this->username = $username;
-        $this->password = $password;
-        $this->dbName = $dbName;
+        $this->conn = new mysqli(
+            DatabaseConstants::DB_SERVER, 
+            DatabaseConstants::DB_USER, 
+            DatabaseConstants::DB_PASSWORD, 
+            DatabaseConstants::DB_NAME);
     }
 
-    function connect(){
-
-        $this->conn = new mysqli($this->serverName, $this->username, $this->password, $this->dbName);
-
-        if($this->conn->connect_error){
-            echo "Failed to connect to database. " . $this->conn->connect_error;
-        }
-    }
-
-    function disconnect(){
+    function __destruct()
+    {
         if($this->conn){
             $this->conn->close();
         }
     }
+
 
     function query($sql){
 

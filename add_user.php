@@ -14,12 +14,7 @@
     $usernameError = $firstNameError = $lastNameError = $emailError = $passwordError = $confirmPasswordError = "";
     $validationerror = "";
 
-    $servername = "localhost";
-    $dbusername = "sa";
-    $dbpassword = "Diamond1!";
-    $dbname = "test";
-    
-    $dbService = new MyDatabaseService($servername,$dbusername,$dbpassword,$dbname);
+    $dbService = new DatabaseService();
     $userRepo = new UserRepository($dbService);
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {

@@ -3,14 +3,8 @@
     require("./model/User.php");
     require("./Data/LoginService.php");
     require("./Data/UserRepository.php");
-    //$users = array();
 
-    $servername = "localhost";
-    $dbusername = "sa";
-    $dbpassword = "Diamond1!";
-    $dbname = "test";
-    
-    $dbService = new MyDatabaseService($servername,$dbusername,$dbpassword,$dbname);
+    $dbService = new DatabaseService();
     $userRepo = new UserRepository($dbService);
     $loginService = new LoginService($dbService);
 
@@ -133,13 +127,6 @@
                 $valid = false;
             }
         }
-    }
-
-    $authenticate = function ($username,$password) use($loginService){
-        $hash = $loginService->validate_login($username);
-        $loginResult = password_verify($password,$hash);
-
-        return $loginResult;
     }
 
 ?>

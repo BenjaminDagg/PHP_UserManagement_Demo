@@ -4,12 +4,7 @@ require("./Data/UserRepository.php");
 
 $search = "";
 
-$servername = "localhost";
-$username = "sa";
-$password = "Diamond1!";
-$dbname = "test";
-
-$dbService = new MyDatabaseService($servername,$username,$password,$dbname);
+$dbService = new DatabaseService();
 $userRepo = new UserRepository($dbService);
 
 $users = $userRepo->get_users();

@@ -8,12 +8,7 @@
     require("./Data/UserRepository.php");
     require("header.php");
 
-    $servername = "localhost";
-    $dbusername = "sa";
-    $dbpassword = "Diamond1!";
-    $dbname = "test";
-    
-    $dbService = new MyDatabaseService($servername,$dbusername,$dbpassword,$dbname);
+    $dbService = new DatabaseService();
     $loginService = new LoginService($dbService);
     $userRepo = new UserRepository($dbService);
 
