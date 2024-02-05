@@ -106,7 +106,7 @@
         }
 
         if($isValid == true){
-            
+
             $currentUser = $userRepo->get_user($id);
 
             $currentUser->userName = $nuserName;
@@ -157,7 +157,7 @@
         position: absolute;
         margin:0 auto;
         width: 200px;
-        height: 100px;
+        height: 125px;
         border: 1px solid black;
         text-align: center;
         display: none;
@@ -172,7 +172,8 @@
         <?php require("header.php") ?>
     </head>
     <body>
-        <h3>Edit User <?php echo $user->locked ?></h3>
+        <h3>Edit User</h3>
+        
         <form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
             <div id="modal" style="display:<?php if($isValid){echo "block";}else{echo "none";} ?>">
                 <h3>Success</h3>
@@ -180,16 +181,71 @@
                 <button onclick="navigateToUserList()" type="button">Ok</button>
             </div>
             <input type="hidden" name="id_hidden" value="<?php echo $id;?>"/><br/><br/>
-            User Name: <input readonly name="username" value="<?php echo $nuserName;?>"/><span><?php echo $usernameError ?><br/><br/>
-            First Name: <input name="firstName" value="<?php echo $firstname;?>"/><span><?php echo $firstNameError ?><br/><br/>
-            Last Name: <input name="lastName" value="<?php echo $lastname;?>"/><span><?php echo $lastNameError ?><br/><br/>
-            Email: <input name="email" value="<?php echo $email;?>"/><span><?php echo $emailError ?><br/><br/>
-            Active: <input type="checkbox" value="yes" name="active" <?php if($isActive){echo "checked='checked'";} ?>/><br/><br/>
-            Locked: <input type="checkbox" value="yes" name="locked" <?php if($isLocked){echo "checked='checked'";} ?>/><br/><br/>
-            <input type="submit"/><br/><br/>
+            <table>
+                <tr>
+                    <td>
+                        <label>User Name:</label>
+                    </td>
+                    <td>
+                        <input class="readonly" readonly name="username" value="<?php echo $nuserName;?>"/>
+                    </td>
+                    <td>
+                        <span class="error"><?php echo $usernameError ?>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>First Name:</label>
+                    </td>
+                    <td>
+                        <input name="firstName" value="<?php echo $firstname;?>"/>
+                    </td>
+                    <td>
+                        <span class="error"><?php echo $firstNameError ?>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>Last Name:</label>
+                    </td>
+                    <td>
+                        <input name="lastName" value="<?php echo $lastname;?>"/>
+                    </td>
+                    <td>
+                        <span><?php echo $lastNameError ?>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>Email:</label>
+                    </td>
+                    <td>
+                        <input name="email" value="<?php echo $email;?>"/><span><?php echo $emailError ?>
+                    </td>
+                    <td>
+                        <span><?php echo $emailError ?>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>Active:</label>
+                    </td>
+                    <td>
+                        <input type="checkbox" value="yes" name="active" <?php if($isActive){echo "checked='checked'";} ?>/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>Locked:</label>
+                    </td>
+                    <td>
+                        <input type="checkbox" value="yes" name="locked" <?php if($isLocked){echo "checked='checked'";} ?>/>
+                    </td>
+                </tr>
+            </table>
+            <span><?php echo $validationerror ?></span>
+            <button type="button" onclick="navigateToUserList()">Back</button><input type="submit"/>
         </form>
-        <span><?php echo $validationerror ?></span>
 
-        <button type="button" onclick="navigateToUserList()">Back</button>
     </body>
 </html>

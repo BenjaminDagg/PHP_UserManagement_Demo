@@ -11,14 +11,18 @@
     $users = $userRepo->get_users();
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        if($_POST['action'] == 'Delete' && $_POST['id']){
-            $id = $_POST['id'];
-            $userRepo->delete_user($id);
+        if($_POST['action'] == 'Delete' && $_POST['username']){
+            $userName = $_POST['username'];
 
+            $userRepo->delete_user($userName);
             $users = $userRepo->get_users();
         }
 
-        
+        if(isset($_POST['edit'])){
+            $id = $_POST['edit'];
+
+            header("Location: edit_user.php?id=" . $id);
+        }
     }
 
     if ($_SERVER["REQUEST_METHOD"] == "GET") {
@@ -57,19 +61,18 @@
         window.location.href = "add_user.php";
     }
 
-    function navigateEditUser(value){
-        window.location.href = "edit_user.php?id=" + value;
-    }
-
     //show delete user confirmation
-    function showModal(userId){
+    async function showModal(userName){
         //show modal
         var modal = document.getElementById("modal");
         modal.style.display = "block";
 
         //set value of hidden ID field in the modal to the user ID that was clicked on
-        var idInput = document.getElementById("userToDelete");
-        idInput.value = userId;
+        var userInput = document.getElementById("userToDelete");
+        var userNameInput = document.getElementById("usernameToDelete");
+
+        userInput.value = userName;
+        userNameInput.innerHTML = userName;
     }
 
     //hide delete user confirmation
@@ -164,9 +167,8 @@
     .header {
         border: none;
         text-align: center;
-        font-weight: bold;
         padding: 5px;
-        background-color: #2e507c;
+        background-color: #294d7e;
         color: white;
         border-right: solid 1px white;;
     }
@@ -205,9 +207,9 @@
     <body>
             <div id="modal" style="display:<?php if($isValid){echo "block";}else{echo "none";} ?>">
                 <h3>Delete User</h3>
-                <span>Are you sure you want to delete this user?</span><br/>
+                <span>Are you sure you want to delete the user <span id="usernameToDelete"></span>?</span><br/>
                 <form  method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
-                    <input hidden="hidden" id="userToDelete" name="id" value="0" />
+                    <input hidden="hidden" id="userToDelete" name="username" value="0" />
                     <button type="button" onclick="hideModal()">Cancel</button>
                     <input type="submit" name="action" value="Delete"/>
                 </form>
@@ -221,6 +223,7 @@
         
         PHP/AJAX Search: <input onkeyup="ajaxOnSearchEntered(this.value)" placeholder="Search"/>
         
+        <form  method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
         <table id="user-table">
             <thead>
                 <tr>
@@ -240,7 +243,8 @@
                     <td class="data" align="center" colspan="8">No users found.</td>
                 </tr>
             <?php endif; ?>
-
+            
+ 
             <?php foreach($users as $value) : ?>
                 <tr class="row">
                     <td class="data"><?php echo $value->id ?></td>
@@ -251,13 +255,18 @@
                     <td class="data"><?php echo ($value->active ? "Yes" : "No") ?></td>
                     <td class="data"><?php echo ($value->locked ? "Yes" : "No") ?></td>
                     <td class="data">
-                        <button type="button" onclick="navigateEditUser('<?php echo $value->id; ?>')">Edit</button>
-                        <button value="<?php echo $value->id; ?>" type="button" onclick="showModal('<?php echo $value->id; ?>')">Delete</button>
+                        <button class="action-button" value="<?php echo $value->id; ?>" name="edit" type="submit" >Edit</button>
+                        <?php if(isset($_SESSION['username']) && $_SESSION['username'] == $value->userName) : ?>
+                            <button disabled class="action-button readonly" value="<?php echo $value->userName; ?>" type="button" onclick="showModal('<?php echo $value->userName; ?>')">Delete</button>
+                        <?php else : ?>
+                            <button class="action-button" value="<?php echo $value->userName; ?>" type="button" onclick="showModal('<?php echo $value->userName; ?>')">Delete</button>
+                        <?php endif; ?>
+                        
                     </td>
                 </tr>
             <?php endforeach; ?>
             </tbody>
         </table>
-        
+        </form>
     </body>
 </html>

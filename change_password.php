@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <style>
-    
+
 </style>
 <?php 
     require("./model/User.php");
@@ -99,14 +99,51 @@
     <head>
         <title>Users</title>
     </head>
-    <h3>Login</h3>
+    
     <body>
+    <div id="container">
+    <h3>Change Password</h3>
     <form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
-            Current Password: <input type="password" name="currentpassword" value="<?php echo $password;?>"/><span><?php echo $passwordError ?><br/><br/>
-            New Password: <input type="password" name="newpassword" value="<?php echo $newpassword;?>"/><span><?php echo $newpasswordError ?><br/><br/>
-            Confirm Password: <input type="password" name="confirmpassword" value="<?php echo $confirmpassword;?>"/><span><?php echo $confirmpasswordError ?><br/><br/>
-            <span><?php echo $resultMessage ?></span><br/>
-            <button type="button" onclick="navigateToUserList()">Back</button><input type="submit" /><br/><br/>
-        </form>
+    <table>
+        <tr>
+            <td>
+                <label>Current Password:</label>
+            </td>
+            <td>
+                <input type="password" name="currentpassword" value="<?php echo $password;?>"/>
+            </td>
+            <td>
+                <span class="error"><?php echo $passwordError ?>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label>New Password:</label>
+            </td>
+            <td>
+                <input type="password" name="newpassword" value="<?php echo $newpassword;?>"/>
+            </td>
+            <td>
+                <span class="error"><?php echo $newpasswordError ?>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label>Confirm Password:</label>
+            </td>
+            <td>
+                <input type="password" name="confirmpassword" value="<?php echo $confirmpassword;?>"/>
+            </td>
+            <td>
+                <span class="error"><?php echo $confirmpasswordError ?>
+            </td>
+        </tr>
+    </table>
+    <label><span class="error"><?php echo $resultMessage ?></label></span><br/>
+    <button type="button" onclick="navigateToUserList()">Back</button>
+    <input type="submit" /><br/><br/>
+    </form>
+
+    </div>
     </body>
 </html>

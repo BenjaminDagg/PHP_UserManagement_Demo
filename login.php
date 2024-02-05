@@ -133,17 +133,75 @@
 <script>
     
 </script>
+<style>
+    .error {
+    color: red;
+}
+
+h3 {
+    color:#294d7e;
+    font-family: Roboto,sans-serif;
+}
+
+body{
+    font-family: Roboto,sans-serif;
+}
+
+button {
+    border-radius: 4px;
+    color: white;
+    background-color: #294d7e;
+    height: 39px;
+    padding: 8px;
+    font-family: Roboto,sans-serif;
+    font-size: 14px;
+}
+
+input[type=submit] {
+    border-radius: 4px;
+    color: white;
+    background-color: #294d7e;
+    height: 39px;
+    padding: 8px;
+    font-family: Roboto,sans-serif;
+    font-size: 14px;
+}
+
+</style>
 <html>
     <head>
         <title>Users</title>
     </head>
-    <h3>Login</h3>
+    
     <body>
-        <form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
-            User Name: <input name="username" value="<?php echo $username;?>"/><span><?php echo $usernameError ?><br/><br/>
-            Password: <input type="password" name="password" value="<?php echo $password;?>"/><span><?php echo $passwordError ?><br/><br/>
-            <span><?php echo $loginresult ?></span><br/>
-            <input type="submit" /><br/><br/>
-        </form>
+    <h3>Login</h3>
+    <form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+        <table>
+            <tr>
+                <td>
+                    <label>User Name:</label>
+                </td>
+                <td>
+                    <input name="username" value="<?php echo $username;?>"/>
+                </td>
+                <td>
+                    <span class="error"><?php echo $usernameError ?>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>Password:</label>
+                </td>
+                <td>
+                    <input type="password" name="password"/>
+                </td>
+                <td>
+                    <span class="error"><?php echo $passwordError ?>
+                </td>
+            </tr>
+        </table>
+        <span class="error"><?php echo $loginresult ?></span><br/>
+        <input type="submit" /><br/><br/>
+    </form>
     </body>
 </html>

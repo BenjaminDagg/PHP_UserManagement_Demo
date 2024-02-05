@@ -48,6 +48,7 @@ else{
         padding: 5px;
     }
 </style>
+<link rel="stylesheet" href="style.css"/>
 <html>
     <head>
         <?php if(!$isLoggedIn) :?>

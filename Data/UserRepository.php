@@ -119,8 +119,8 @@ class UserRepository {
         $this->db->insert($sql);
     }
 
-    function delete_user($id){
-        $sql = "DELETE FROM users WHERE Id = $id";
+    function delete_user($userName){
+        $sql = "DELETE FROM users WHERE UserName = '$userName'";
 
         $this->db->delete($sql);
     }

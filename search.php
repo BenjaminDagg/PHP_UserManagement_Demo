@@ -1,4 +1,7 @@
 <?php
+
+session_start();
+
 require("./model/User.php");
 require("./Data/UserRepository.php");
 
@@ -49,8 +52,12 @@ if(count($users) > 0){
                 <td class="data"><?php echo ($value->active ? "Yes" : "No") ?></td>
                 <td class="data"><?php echo ($value->locked ? "Yes" : "No") ?></td>
                 <td class="data">
-                    <button type="button" onclick="navigateEditUser('<?php echo $value->id; ?>')">Edit</button>
-                    <button value="<?php echo $value->id; ?>" type="button" onclick="showModal('<?php echo $value->id; ?>')">Delete</button>
+                <button class="action-button" value="<?php echo $value->id; ?>" name="edit" type="submit" >Edit</button>
+                        <?php if(isset($_SESSION['username']) && $_SESSION['username'] == $value->userName) : ?>
+                            <button disabled class="action-button readonly" value="<?php echo $value->userName; ?>" type="button" onclick="showModal('<?php echo $value->userName; ?>')">Delete</button>
+                        <?php else : ?>
+                            <button class="action-button" value="<?php echo $value->userName; ?>" type="button" onclick="showModal('<?php echo $value->userName; ?>')">Delete</button>
+                        <?php endif; ?>
                 </td>
             </tr>
         <?php 

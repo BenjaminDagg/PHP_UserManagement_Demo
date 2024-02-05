@@ -1,12 +1,5 @@
-<!DOCTYPE html>
-
-<script>
-    function navigateToUserList(){
-        window.location.href = "list.php";
-        
-    }
-</script>
 <?php
+    require("header.php");
     require("./model/User.php");
     require("./Data/UserRepository.php");
 
@@ -114,6 +107,7 @@
 
             try{
                 $userRepo->insert_user($user);
+                $isValid = true;
             }
             catch(Exception $e){
                 $validationerror = "Error when creating user. " . $e->getMessage() . " <br/>";
@@ -132,12 +126,13 @@
 
     
 ?>
+<!DOCTYPE html>
 <style>
     #modal {
         position: absolute;
         margin:0 auto;
         width: 200px;
-        height: 100px;
+        height: 125px;
         border: 1px solid black;
         text-align: center;
         display: none;
@@ -146,30 +141,97 @@
     }
 
 </style>
+<script>
+    function navigateToUserList(){
+        window.location.href = "list.php";
+        
+    }
+</script>
 <html>
     <head>
         <title>Add User</title>
-        <?php require("header.php") ?>
     </head>
     <body>
         
         <h3>Add User </h3>
         <form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
-            <div id="modal" style="display:<?php if($isValid){echo "block";}else{echo "none";} ?>">
+             <div id="modal" style="display:<?php if($isValid){echo "block";}else{echo "none";} ?>">
                 <h3>Success</h3>
                 <span>Successfully added user.</span><br/>
                 <button onclick="navigateToUserList()" type="button">Ok</button>
             </div>
-            User Name: <input name="username" value="<?php echo $nuserName;?>"/><span><?php echo $usernameError ?><br/><br/>
-            First Name: <input name="firstName" value="<?php echo $firstname;?>"/><span><?php echo $firstNameError ?><br/><br/>
-            Last Name: <input name="lastName" value="<?php echo $lastname;?>"/><span><?php echo $lastNameError ?><br/><br/>
-            Email: <input name="email" value="<?php echo $email;?>"/><span><?php echo $emailError ?><br/><br/>
-            Password: <input type="password" name="password" value="<?php echo $password;?>"/><span><?php echo $passwordError ?><br/><br/>
-            Confirm Password: <input type="password" name="passwordconfirm" value="<?php echo $confirmPassword;?>"/><span><?php echo $confirmPasswordError ?><br/><br/>
-            <input type="submit" /><br/><br/>
+            <table>
+                <tr>
+                    <td>
+                        <label>User Name:</label>
+                    </td>
+                    <td>
+                        <input name="username" value="<?php echo $nuserName;?>"/>
+                    </td>
+                    <td>
+                        <span class="error"><?php echo $usernameError ?>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>First Name:</label>
+                    </td>
+                    <td>
+                        <input name="firstName" value="<?php echo $firstname;?>"/>
+                    </td>
+                    <td>
+                        <span class="error"><?php echo $firstNameError ?>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>Last Name:</label>
+                    </td>
+                    <td>
+                        <input name="lastName" value="<?php echo $lastname;?>"/>
+                    </td>
+                    <td>
+                        <span class="error"><?php echo $lastNameError ?>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>Email:</label>
+                    </td>
+                    <td>
+                        <input name="email" value="<?php echo $email;?>"/>
+                    </td>
+                    <td>
+                        <span class="error"><?php echo $emailError ?>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>Password:</label>
+                    </td>
+                    <td>
+                        <input type="password" name="password" value="<?php echo $password;?>"/>
+                    </td>
+                    <td>
+                        <span class="error"><?php echo $passwordError ?>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>Confirm Password:</label>
+                    </td>
+                    <td>
+                        <input type="password" name="passwordconfirm" value="<?php echo $confirmPassword;?>"/>
+                    </td>
+                    <td>
+                        <span class="error"><?php echo $confirmPasswordError ?>
+                    </td>
+                </tr>
+            </table>
+        <span class="error"><?php echo $validationerror ?></span>
+        <button type="button" onclick="navigateToUserList()">Back</button><input type="submit" />
         </form>
-        <span><?php echo $validationerror ?></span>
 
-        <button type="button" onclick="navigateToUserList()">Back</button>
+        
     </body>
 </html>
