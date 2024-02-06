@@ -1,6 +1,6 @@
 <?php 
 
-require_once("DbService.php");
+require_once("DatabaseService.php");
 
 class UserRepository {
 

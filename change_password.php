@@ -1,7 +1,3 @@
-<!DOCTYPE html>
-<style>
-
-</style>
 <?php 
     require("./model/User.php");
     require("./Data/LoginService.php");
@@ -68,7 +64,8 @@
             if($passwordMatch){
                 //test if user is trying to change their password to the same as current password
                 if(password_verify($newpassword,$currentPassHash)){
-                    $resultMessage = "Cannot change password to same as current password.";
+                    $resultMessage = "Cannot change password to the same as your current password.";
+                    $valid = false;
                 }
                 else{
                     try{
@@ -76,25 +73,42 @@
                         $user-> password = $newPassHash;
 
                         $userRepo->update_password($user->userName,$newPassHash);
-                        $resultMessage = "Successfully updated password.";
+                        $resultMessage = "";
+                        $valid = true;
                     }
                     catch(Exception $e){
                         echo "Failed to update user password. " . $e->getMessage();
+                        $valid = false;
                     }
                 }
             }
             else{
                 $resultMessage = "Incorrect current password";
+                $valid = false;
             }
         }
     }
 ?>
+<!DOCTYPE html>
 <script>
     function navigateToUserList(){
         window.location.href = "list.php";
         
     }
 </script>
+<style>
+    #modal {
+        position: absolute;
+        margin:0 auto;
+        width: 200px;
+        height: 150px;
+        border: 1px solid black;
+        text-align: center;
+        display: none;
+        background-color: white;
+        box-shadow: 5px 10px 18px #888888;
+    }
+</style>
 <html>
     <head>
         <title>Users</title>
@@ -104,6 +118,11 @@
     <div id="container">
     <h3>Change Password</h3>
     <form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+        <div id="modal" style="display:<?php if($valid){echo "block";}else{echo "none";} ?>">
+            <h3>Success</h3>
+            <span>Successfully updated password.</span><br/>
+            <button onclick="navigateToUserList()" type="button">Ok</button>
+        </div>
     <table>
         <tr>
             <td>

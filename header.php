@@ -47,28 +47,45 @@ else{
         box-shadow: 5px 10px 18px #888888;
         padding: 5px;
     }
+
+    #block {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background-color: white;
+    }
 </style>
 <link rel="stylesheet" href="style.css"/>
 <html>
     <head>
-        <?php if(!$isLoggedIn) :?>
-        <div id="alert-modal" style="display:<?php if($isValid){echo "block";}else{echo "none";} ?>">
-            <h3>Alert</h3>
-            <span>Your session has expired. Please login again.</span><br/>
-            <button type="button" onclick="returnToLogin()">Ok</button>
-        </div>
-        <?php endif; ?>
         <form action="logout.php" method="post">
-            <button type="submit" name="logout" value="Logout">Logout</button>
-            <button type="button" onclick="NavigateChangePassword()">Change Password</button>
-            <span>Logged in as <?php
+            
+            <?php if($isLoggedIn) :?>
+                <button type="submit" name="logout" value="Logout">Logout</button>
+                <button type="button" onclick="NavigateChangePassword()">Change Password</button>
+                <span>Logged in as <?php
                 if(isset($_SESSION["username"])){
                     $username = $_SESSION["username"];
                     echo "$username";
                 }
             ?></span>
+            <?php endif; ?>
         </form>
         
     </head>
-    </body>
+    <?php if(!$isLoggedIn) :?>
+        <body>
+            <div id="block">
+                <div id="alert-modal" style="display:<?php if($isValid){echo "block";}else{echo "none";} ?>">
+                    <h3>Alert</h3>
+                    <span>Your session has expired. Please login again.</span><br/>
+                    <button type="button" onclick="returnToLogin()">Ok</button>
+                </div>
+            </div>
+        </body>
+    <?php else :?>
+        <body>
+
+        </body>
+    <?php endif; ?>
 </html>

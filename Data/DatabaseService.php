@@ -1,6 +1,6 @@
 <?php 
 
-require_once("DatabaseContants.php");
+require_once("DatabaseConstants.php");
 
 class DatabaseService {
 
