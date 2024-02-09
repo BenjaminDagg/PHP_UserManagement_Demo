@@ -104,6 +104,7 @@ use PHPMailer\PHPMailer\SMTP;
                     //also unlock user if they were previously locked
                     $user->incorrectLoginAttempts = 0;
                     $user->locked = false;
+                    $user->lockoutEnd = null;
                     $user->active = $user->active;
 
                     $userRepo->update_user($user);
@@ -172,6 +173,8 @@ input[type=submit] {
         background-color: white;
         box-shadow: 5px 10px 18px #888888;
     }
+
+    <?php require("./style.css"); ?>
 </style>
 <html>
                 <head>
@@ -218,7 +221,7 @@ input[type=submit] {
                         <?php else : ?>
                             <div id="modal" style="display:<?php if(!$isTokenValid){echo "block";}else{echo "none";} ?>">
                             <h3>Error</h3>
-                            <span>The reset link is invalid or has expired. Please return to login.</span><br/>
+                            <span>The reset link is invalid or has expired. Please try again.</span><br/>
                             <button onclick="navigateToLogin()" type="button">Ok</button>
                         </div>
                         <?php endif ?>

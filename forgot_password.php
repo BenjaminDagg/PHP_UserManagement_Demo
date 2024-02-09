@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <?php
-
+session_start();
 use PHPMailer\PHPMailer\PHPMailer;
 
     require("./model/User.php");
@@ -126,16 +126,16 @@ input[type=submit] {
         background-color: white;
         box-shadow: 5px 10px 18px #888888;
     }
-
+    <?php require("./style.css"); ?>
 </style>
 <html>
     <head>
-        <title>Users</title>
+        <title>Reset Password</title>
     </head>
     
     <body>
     <h3>Reset Password</h3>
-    <form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+    <form method="POST" action="process_reset.php">
         <div id="modal" style="display:<?php if($isValid){echo "block";}else{echo "none";} ?>">
             <h3>Success</h3>
             <span>A reset password email has been sent to the email associated with this account.</span><br/>
@@ -150,11 +150,10 @@ input[type=submit] {
                     <input name="email" value="<?php echo $email;?>"/>
                 </td>
                 <td>
-                    <span class="error"><?php echo $emailError ?>
+                    <span class="error"><?php if(isset($_SESSION['resetPasswordError'])) {echo $_SESSION['resetPasswordError']; unset($_SESSION['resetPasswordError']);} ?></span>
                 </td>
             </tr>
         </table>
-        <span class="error"><?php echo $resetResult ?></span><br/>
         <input type="submit" /><button type="button" onclick="navigateToLogin()">Cancel</button>
     </form>
     </body>

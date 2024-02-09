@@ -53,6 +53,7 @@ else{
         width: 100%;
         height: 100%;
         background-color: white;
+        z-index: 5;
     }
 </style>
 <link rel="stylesheet" href="style.css"/>
@@ -76,7 +77,7 @@ else{
     <?php if(!$isLoggedIn) :?>
         <body>
             <div id="block">
-                <div id="alert-modal" style="display:<?php if($isValid){echo "block";}else{echo "none";} ?>">
+                <div id="alert-modal" style="display:<?php if(!$isLoggedIn){echo "block";}else{echo "none";} ?>">
                     <h3>Alert</h3>
                     <span>Your session has expired. Please login again.</span><br/>
                     <button type="button" onclick="returnToLogin()">Ok</button>

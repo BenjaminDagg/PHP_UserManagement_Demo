@@ -111,7 +111,7 @@
 </style>
 <html>
     <head>
-        <title>Users</title>
+        <title>Change Password</title>
     </head>
     
     <body>
