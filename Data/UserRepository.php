@@ -95,11 +95,54 @@ class UserRepository {
         return $user;
     }
 
+    function get_user_by_email($email){
+        $user = new User();
+
+        $sql = "SELECT * FROM users WHERE Email = '$email'";
+
+        $result = $this->db->query($sql);
+
+        if($result->num_rows > 0){
+
+            $row = $result->fetch_assoc();
+    
+                $user->active = $row['Active'] == "1" ? true : false;
+                $user->email = $row['Email'];
+                $user->firstName = $row['FirstName'];
+                $user->id = $row['Id'];
+                $user->lastName = $row['LastName'];
+                $user->userName = $row['UserName'];
+                $user->password = $row['PasswordHash'];
+                $user->locked = $row['Locked'] == "0" ? false : true;
+                $user->incorrectLoginAttempts = (int)$row["IncorrectLoginAttempts"];
+                $user->lockoutEnd = $row["LockoutEnd"];
+        }
+
+        return $user;
+    }
+
     function user_exists($searchUsername){
 
         $exists = false;
 
         $sql = "SELECT * FROM users WHERE UserName = '$searchUsername'";
+
+        $result = $this->db->query($sql);
+
+        if($result->num_rows > 0){
+            $exists = true;
+        }
+        else{
+            $exists = false;
+        }
+
+        return $exists;
+    }
+
+    function email_exists($email){
+        $exists = false;
+
+        $sql = "SELECT * FROM users WHERE Email = '$email'";
 
         $result = $this->db->query($sql);
 

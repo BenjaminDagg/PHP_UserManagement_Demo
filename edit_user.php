@@ -172,7 +172,7 @@
         <?php require("header.php") ?>
     </head>
     <body>
-        <h3>Edit User</h3>
+       
         
         <form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
             <div id="modal" style="display:<?php if($isValid){echo "block";}else{echo "none";} ?>">
@@ -181,6 +181,7 @@
                 <button onclick="navigateToUserList()" type="button">Ok</button>
             </div>
             <input type="hidden" name="id_hidden" value="<?php echo $id;?>"/><br/><br/>
+            <h3>Edit User</h3>
             <table>
                 <tr>
                     <td>

@@ -65,6 +65,10 @@
             $emailError = "Email is required";
             $isValid = false;
         }
+        else if($userRepo->email_exists($_POST['email'])){
+            $emailError = "Email exists for another user";
+            $isValid = false;
+        }
         else{
             $email = $_POST["email"];
 

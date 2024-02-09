@@ -199,6 +199,14 @@ input[type=submit] {
                     <span class="error"><?php echo $passwordError ?>
                 </td>
             </tr>
+            <tr>
+                <td>
+                    <label>Forgot Password:</label>
+                </td>
+                <td>
+                    <a href="forgot_password.php">Reset Password</a>
+                </td>
+            </tr>
         </table>
         <span class="error"><?php echo $loginresult ?></span><br/>
         <input type="submit" /><br/><br/>
