@@ -17,6 +17,11 @@ class DatabaseService {
 
     function __destruct()
     {
+        $this->disconnect();
+    }
+
+
+    function disconnect(){
         if($this->conn){
             $this->conn->close();
         }

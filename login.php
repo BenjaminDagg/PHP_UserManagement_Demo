@@ -68,21 +68,6 @@
     
                             //reset user incorrect login attempts
                             $user->incorrectLoginAttempts = 0;
-                            if($user->active){
-                                $user->active = 1;
-                            }
-                            else{
-                                $user->active = 0;
-                            }
-    
-                            if($user->locked){
-                                $user->locked = 1;
-                            }
-                            else{
-                                $user->locked = 0;
-                            }
-    
-    
                             $userRepo->update_user($user);
     
                             Header("Location: list.php");
@@ -94,24 +79,15 @@
                         $user->incorrectLoginAttempts = $user->incorrectLoginAttempts + 1;
                  
                         if($user->incorrectLoginAttempts >= 3){
-                            $user->locked = 1;
+                            $user->locked = true;
                             $loginresult = "User is locked. Too many incorrect login attempts.";
                         }
                         else{
-                            $user->locked = 0;
+                            $user->locked = false;
                             $loginresult = "Incorrect username or password.";
                         }
 
-                        //reset user active flag
-                        if($user->active){
-                            $user->active = 1;
-                        }
-                        else{
-                            $user->active = 0;
-                        }
-                        
                         $valid = false;
-
                         $userRepo->update_user($user);
                     }
                 }

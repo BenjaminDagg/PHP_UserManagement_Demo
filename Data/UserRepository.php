@@ -156,7 +156,15 @@ class UserRepository {
         return $exists;
     }
 
+
     function insert_user($user){
+
+        //set active status from bool to int before inserting to db
+        $user->active = $user->active ? 1 : 0;
+
+        //set locked status from bool to int before inserting to db
+        $user->locked = $user->locked ? 1 : 0;
+
         $sql = "INSERT INTO users (UserName, FirstName, LastName, Email, Active, PasswordHash, Locked, IncorrectLoginAttempts) VALUES ('$user->userName','$user->firstName','$user->lastName','$user->email', $user->active, '$user->password', 0, 0 )";
 
         $this->db->insert($sql);
@@ -169,6 +177,12 @@ class UserRepository {
     }
 
     function update_user($user){
+
+        //set active status from bool to int before inserting to db
+        $user->active = $user->active ? 1 : 0;
+
+        //set locked status from bool to int before inserting to db
+        $user->locked = $user->locked ? 1 : 0;
 
         $sql = "UPDATE users SET UserName = '$user->userName', FirstName = '$user->firstName', LastName = '$user->lastName', Email = '$user->email', Active = $user->active, PasswordHash = '$user->password', Locked = $user->locked, IncorrectLoginAttempts = $user->incorrectLoginAttempts, LockoutEnd = ". ($user->lockoutEnd == NULL ? "NULL" : $user->lockoutEnd) . " WHERE Id = $user->id";
 

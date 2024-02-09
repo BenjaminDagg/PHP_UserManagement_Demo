@@ -106,7 +106,10 @@
             $user->firstName = $firstname;
             $user->lastName = $lastname;
             $user->email = $email;
-            $user->active = 1;
+            $user->active = true;
+            $user->locked = false;
+            $user->incorrectLoginAttempts = 0;
+            $user->lockoutEnd = NULL;
             $user->password = password_hash($password,PASSWORD_DEFAULT);
 
             try{

@@ -82,6 +82,14 @@
                 $emailError = "Invalid email format";
                 $isValid = false;
             }
+
+            //check if email exists for another user
+            $userEmail = $userRepo->get_user_by_email($email);
+
+            if(strlen($userEmail->userName) > 0 && $userEmail->userName != $nuserName){
+                $emailError = "This email exists for another user.";
+                $isValid = false;
+            }
         }
 
         if(isset($_POST["active"]) && $_POST["active"] == "yes"){
@@ -113,22 +121,22 @@
             $currentUser->firstName = $firstname;
             $currentUser->lastName = $lastname;
             $currentUser->email = $email;
-            $currentUser->active = $isActive ? 1 : 0;
+            $currentUser->active = $isActive;
             $currentUser->lockoutEnd = $currentUser->lockoutEnd == null ? NULL : strtotime($currentUser->lockoutEnd);
 
             //unlock user if locked is unchecked
             if(!$isLocked){
-                $currentUser->locked = 0;
+                $currentUser->locked = false;
                 $currentUser->incorrectLoginAttempts = 0;
                 $currentUser->lockoutEnd = NULL;
             }
             //if user wasn't locked before but they changed the lock checkbox to true do nothing. 
             //User shouldn't be able to manually lock someone. That's what the Active feature is for
             elseif($isLocked && !$currentUser->locked){
-                $currentUser->locked = 0;
+                $currentUser->locked = false;
             }
             else{
-                $currentUser->locked = $currentUser->locked ? 1 : 0;
+                $currentUser->locked = $currentUser->locked;
             }
             
             try{
@@ -221,10 +229,10 @@
                         <label>Email:</label>
                     </td>
                     <td>
-                        <input name="email" value="<?php echo $email;?>"/><span><?php echo $emailError ?>
+                        <input name="email" value="<?php echo $email;?>"/>
                     </td>
                     <td>
-                        <span><?php echo $emailError ?>
+                        <span class="error"><?php echo $emailError ?>
                     </td>
                 </tr>
                 <tr>

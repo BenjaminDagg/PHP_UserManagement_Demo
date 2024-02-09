@@ -103,8 +103,8 @@ use PHPMailer\PHPMailer\SMTP;
 
                     //also unlock user if they were previously locked
                     $user->incorrectLoginAttempts = 0;
-                    $user->locked = 0;
-                    $user->active = $user->active ? 1 : 0;
+                    $user->locked = false;
+                    $user->active = $user->active;
 
                     $userRepo->update_user($user);
                     $resultMessage = "";
