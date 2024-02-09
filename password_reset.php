@@ -8,6 +8,8 @@ use PHPMailer\PHPMailer\SMTP;
     require("./Data/LoginService.php");
     require("./Data/UserRepository.php");
 
+    date_default_timezone_set('America/Los_Angeles');
+
     $dbService = new DatabaseService();
     $userRepo = new UserRepository($dbService);
     $loginService = new LoginService($dbService);
@@ -28,7 +30,22 @@ use PHPMailer\PHPMailer\SMTP;
 
         //token and email match
         if($reset->num_rows > 0){
-            $isTokenValid = true;
+
+            $row = $reset->fetch_assoc();
+
+            //check if token axpired
+            $now = date("Y-m-d H:i:s");
+            $expDate = $row['expiration_date'];
+
+            //token expired
+            if($now > $expDate){
+                $isTokenValid = false;
+            }
+            //token good
+            else{
+                $isTokenValid = true;
+            }
+            
         }
         //token/email mismatch or not found
         else{
@@ -70,13 +87,13 @@ use PHPMailer\PHPMailer\SMTP;
         if($valid == true){
             $valid = false;
             $user = $userRepo->get_user_by_email($email);
-            $currentPassHash = $user->email;
+            $currentPassHash = $user->password;
 
             $passwordMatch = password_verify($password,$currentPassHash);
 
             //trying to reset password to same as curent password
             if($passwordMatch){
-                $resultMessage = "Cannot change password to the same as your current password.";
+                $resetResult = "Cannot change password to the same as your current password.";
                 $valid = false;
             }
             else{
@@ -84,7 +101,12 @@ use PHPMailer\PHPMailer\SMTP;
                     $newPassHash = password_hash($password,PASSWORD_DEFAULT);
                     $user-> password = $newPassHash;
 
-                    $userRepo->update_password($user->userName,$newPassHash);
+                    //also unlock user if they were previously locked
+                    $user->incorrectLoginAttempts = 0;
+                    $user->locked = 0;
+                    $user->active = $user->active ? 1 : 0;
+
+                    $userRepo->update_user($user);
                     $resultMessage = "";
                     $valid = true;
 
@@ -92,7 +114,7 @@ use PHPMailer\PHPMailer\SMTP;
                     $loginService->delete_reset_token($email);
                 }
                 catch(Exception $e){
-                    echo "Failed to update user password. " . $e->getMessage();
+                    $resultMessage =  "Failed to update user password. " . $e->getMessage();
                     $valid = false;
                 }
             }
@@ -142,7 +164,7 @@ input[type=submit] {
 #modal {
         position: absolute;
         margin:0 auto;
-        width: 200px;
+        width: 225px;
         height: 150px;
         border: 1px solid black;
         text-align: center;
@@ -196,7 +218,7 @@ input[type=submit] {
                         <?php else : ?>
                             <div id="modal" style="display:<?php if(!$isTokenValid){echo "block";}else{echo "none";} ?>">
                             <h3>Error</h3>
-                            <span>The token is invalid or has expired. Return to login.</span><br/>
+                            <span>The reset link is invalid or has expired. Please return to login.</span><br/>
                             <button onclick="navigateToLogin()" type="button">Ok</button>
                         </div>
                         <?php endif ?>

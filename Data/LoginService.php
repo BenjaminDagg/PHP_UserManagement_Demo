@@ -31,10 +31,11 @@ class LoginService {
 
     function create_reset_token($email){
 
-        $expFormat = mktime(
-            date("H")+1, date("i"), date("s"), date("m") ,date("d"), date("Y")
-            );
-        $expDate = date("Y-m-d H:i:s",$expFormat);
+        date_default_timezone_set('America/Los_Angeles');
+
+        $oneHour = strtotime('1 hour');
+        $expDate = date("Y-m-d H:i:s",$oneHour);
+        
         $key = md5($expDate);
         $addKey = substr(md5(uniqid(rand(),1)),3,10);
         $key = $key . $addKey;

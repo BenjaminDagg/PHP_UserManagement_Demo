@@ -147,6 +147,28 @@ body{
     font-family: Roboto,sans-serif;
 }
 
+input {
+    padding: 6px;
+    font-size: 14px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+input:focus {
+    border: 1px solid #294d7e;
+    outline: 1px solid #294d7e;
+}
+
+input[type=submit] {
+    border-radius: 4px;
+    color: white;
+    background-color: #294d7e;
+    height: 39px;
+    padding: 8px;
+    font-family: Roboto,sans-serif;
+    font-size: 14px;
+}
+
 button {
     border-radius: 4px;
     color: white;
@@ -167,6 +189,23 @@ input[type=submit] {
     font-size: 14px;
 }
 
+#reset-link {
+    text-align: center;
+}
+
+#login-form{
+    width: 500px;
+    padding: 5px;
+}
+
+table {
+    table-layout: fixed;
+}
+
+table th {
+    overflow-wrap: break-word;
+}
+
 </style>
 <html>
     <head>
@@ -175,8 +214,8 @@ input[type=submit] {
     
     <body>
     <h3>Login</h3>
-    <form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
-        <table>
+    <form id="login-form" method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+        <table style="table-layout: fixed";>
             <tr>
                 <td>
                     <label>User Name:</label>
@@ -200,16 +239,19 @@ input[type=submit] {
                 </td>
             </tr>
             <tr>
+                <td colspan="3">
+                    <span class="error"><?php echo $loginresult ?>
+                </td>
+            </tr>
+            <tr>
                 <td>
-                    <label>Forgot Password:</label>
+                    <input type="submit" />
                 </td>
                 <td>
-                    <a href="forgot_password.php">Reset Password</a>
+                    <a id="reset-link" href="forgot_password.php">Reset Password</a>
                 </td>
             </tr>
         </table>
-        <span class="error"><?php echo $loginresult ?></span><br/>
-        <input type="submit" /><br/><br/>
     </form>
     </body>
 </html>
