@@ -122,7 +122,7 @@
             $currentUser->lastName = $lastname;
             $currentUser->email = $email;
             $currentUser->active = $isActive;
-            $currentUser->lockoutEnd = $currentUser->lockoutEnd == null ? NULL : strtotime($currentUser->lockoutEnd);
+            $currentUser->lockoutEnd = $currentUser->lockoutEnd == null ? NULL : $currentUser->lockoutEnd;
 
             //unlock user if locked is unchecked
             if(!$isLocked){

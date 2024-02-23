@@ -184,7 +184,7 @@ class UserRepository {
         //set locked status from bool to int before inserting to db
         $user->locked = $user->locked ? 1 : 0;
 
-        $sql = "UPDATE users SET UserName = '$user->userName', FirstName = '$user->firstName', LastName = '$user->lastName', Email = '$user->email', Active = $user->active, PasswordHash = '$user->password', Locked = $user->locked, IncorrectLoginAttempts = $user->incorrectLoginAttempts, LockoutEnd = ". ($user->lockoutEnd == NULL ? "NULL" : $user->lockoutEnd) . " WHERE Id = $user->id";
+        $sql = "UPDATE users SET UserName = '$user->userName', FirstName = '$user->firstName', LastName = '$user->lastName', Email = '$user->email', Active = $user->active, PasswordHash = '$user->password', Locked = $user->locked, IncorrectLoginAttempts = $user->incorrectLoginAttempts, LockoutEnd = ". ($user->lockoutEnd == NULL ? "NULL" : "'$user->lockoutEnd'") . " WHERE Id = $user->id";
 
         $this->db->query($sql);
     }

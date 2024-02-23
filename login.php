@@ -4,6 +4,8 @@
     require("./Data/LoginService.php");
     require("./Data/UserRepository.php");
 
+    date_default_timezone_set('America/Los_Angeles');
+
     $dbService = new DatabaseService();
     $userRepo = new UserRepository($dbService);
     $loginService = new LoginService($dbService);
@@ -48,16 +50,29 @@
 
                     //correct password
                     if($loginresult){
-  
+                        
+                        //check if user is currently locked
+                        $today = date("Y-m-d H:i:s");
+                        $expire = $user->lockoutEnd;
+
+                        $now = strtotime($today);
+                        $lockoutEnd = strtotime($expire);      
+
                         if(!$user->active){
                             $loginresult = "User account is deactivated <br/>";
                             $valid = false;
                         }
-                        elseif($user->locked){
+                        if($user->locked && ($now < $lockoutEnd)){
                             $loginresult = "User is locked. Too many incorrect login attempts.. <br/>";
                             $valid = false;
                         }
-                        else{
+                        if($user->locked && ($now > $lockoutEnd)){
+                            $user->locked = false;
+                            $user->lockoutEnd = NULL;
+                            $valid = true;
+                        }
+                        
+                        if($valid){
                             //create session
                             session_start();
     
@@ -80,7 +95,15 @@
                  
                         if($user->incorrectLoginAttempts >= 3){
                             $user->locked = true;
+
+                            //set lockout end date if not set
+                            if($user->lockoutEnd == null){
+                                $lockoutEnd = get_lockout_end_date();
+                                $user->lockoutEnd = $lockoutEnd;
+                            }
+
                             $loginresult = "User is locked. Too many incorrect login attempts.";
+                            
                         }
                         else{
                             $user->locked = false;
@@ -103,6 +126,13 @@
                 $valid = false;
             }
         }
+    }
+
+    function get_lockout_end_date(){
+        
+
+        $now = date_create()->modify("+10 minutes")->format('Y-m-d H:i:s');
+        return $now;
     }
 
 ?>
